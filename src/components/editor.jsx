@@ -1,9 +1,11 @@
 import React, { useState, useRef } from "react";
 import { useContent } from "./contentContext";
-import { Button } from "./atoms/button";
-import Toolbar from "./atoms/toolbar";
+import { Button } from "./elements/atoms/button";
+import Toolbar from "./elements/atoms/toolbar";
 import { X, Plus } from "lucide-react";
-import FormattingTooltip from "./atoms/tooltip";
+import FormattingTooltip from "./elements/atoms/tooltip";
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "./elements/dropdown-menu";
+import { ChevronUp, ChevronDown, LineChart } from 'lucide-react';
 
 export default function PostEditor() {
   const { setGlobalContent } = useContent();
@@ -13,7 +15,7 @@ export default function PostEditor() {
   const [cursorPosition, setCursorPosition] = useState(null);
   const [charCount, setCharCount] = useState(0); // New state for character count
 
-  // Store the cursor range
+  
   const savedRange = useRef(null);
 
   const saveCursorPosition = () => {
@@ -21,7 +23,7 @@ export default function PostEditor() {
     if (selection && selection.rangeCount > 0) {
       savedRange.current = selection.getRangeAt(0);
       
-      // Calculate cursor position for plus button
+      
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
       setCursorPosition({
@@ -40,20 +42,20 @@ export default function PostEditor() {
   };
 
   const handleInput = () => {
-    saveCursorPosition(); // Save cursor position before changes
+    saveCursorPosition(); 
     if (editorRef.current) {
-      const plainText = editorRef.current.textContent; // Extract plain text
-      setGlobalContent(plainText); // Save plain text to global content
-      setCharCount(plainText.length); // Update character count
+      const plainText = editorRef.current.textContent; 
+      setGlobalContent(plainText); 
+      setCharCount(plainText.length); 
     }
-    restoreCursorPosition(); // Restore cursor position after changes
+    restoreCursorPosition(); 
   };
 
   const handleFormat = (type) => {
-    saveCursorPosition(); // Save cursor position before formatting
+    saveCursorPosition(); 
     document.execCommand(type, false);
-    restoreCursorPosition(); // Restore cursor position after formatting
-    setTooltipPosition(null); // Hide tooltip
+    restoreCursorPosition(); 
+    setTooltipPosition(null); 
   };
 
   const handleTextSelection = () => {
@@ -76,13 +78,13 @@ export default function PostEditor() {
       selection.removeAllRanges();
       selection.addRange(savedRange.current);
       
-      // Create and insert headline
+    
       const headlineElement = document.createElement('h4');
       headlineElement.className = 'text-2xl font-bold my-4';
       headlineElement.textContent = 'New Headline';
       savedRange.current.insertNode(headlineElement);
       
-      // Place cursor at end of new headline
+      
       const range = document.createRange();
       range.setStartAfter(headlineElement);
       range.collapse(true);
@@ -90,7 +92,6 @@ export default function PostEditor() {
       selection.removeAllRanges();
       selection.addRange(range);
       
-      // Focus editor and update content
       editorRef.current.focus();
       handleInput();
     }
@@ -110,16 +111,42 @@ export default function PostEditor() {
     setLastSaved(formattedDate);
 
     if (editorRef.current) {
-      const plainText = editorRef.current.textContent; // Extract plain text
-      setGlobalContent(plainText); // Save plain text content
+      const plainText = editorRef.current.textContent; 
+      setGlobalContent(plainText); 
     }
   };
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const toggleDropdown = () => setIsDropdownOpen((prev) => !prev);
 
   return (
     <div className="flex flex-col h-screen border-r border-l">
       {/* Header */}
       <div className="p-4 border-b flex justify-between items-center">
         <h1 className="text-xl font-semibold">Write Post</h1>
+        <div className="flex items-center space-x-4">
+          <button className="flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50">
+            <LineChart size={18} className="text-gray-600" />
+            <span className="text-gray-600 font-medium">Check Score</span>
+          </button>
+          <div className="relative flex ps-3 border-l">
+            <button className="flex items-center space-x-1" onClick={toggleDropdown}>
+              <img
+                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ0FpBg5Myb9CQ-bQpFou9BY9JXoRG6208_Q&s"
+                alt="Profile"
+                className="w-8 h-8 rounded-full border border-gray-200"
+              />
+              <div className="flex flex-col">
+                <ChevronUp size={16} className="text-gray-400" />
+                <ChevronDown size={16} className="text-gray-400 -mt-1" />
+              </div>
+            </button>
+            <DropdownMenu isOpen={isDropdownOpen}>
+              <DropdownMenuItem>Profile</DropdownMenuItem>
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenu>
+          </div>
+        </div>
       </div>
 
       {/* Toolbar */}
@@ -135,7 +162,7 @@ export default function PostEditor() {
             onInput={handleInput}
             onMouseUp={handleTextSelection}
             onKeyUp={handleTextSelection}
-            dangerouslySetInnerHTML={{ __html: "" }} // Start with empty content
+            dangerouslySetInnerHTML={{ __html: "" }} 
           />
 
           {cursorPosition && (

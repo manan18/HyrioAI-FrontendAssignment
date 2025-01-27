@@ -2,9 +2,9 @@ import React, { createContext, useState, useContext } from "react";
 import { useContent } from "./contentContext";
 import { MessageCircle, Share, Send } from 'lucide-react';
 import { Smartphone, Tablet, Monitor } from 'lucide-react';
-import { PhonePreview } from './atoms/phone';
-import { TabletPreview } from './atoms/tablet';
-import { DesktopPreview } from './atoms/desktop';
+import { PhonePreview } from './elements/phone';
+import { TabletPreview } from './elements/tablet';
+import { DesktopPreview } from './elements/desktop';
 
 const LinkedInPost = () => {
   const [activeDevice, setActiveDevice] = useState('phone');
@@ -39,7 +39,8 @@ const LinkedInPost = () => {
         <div className="p-4 flex flex-col justify-between">
           <div className="flex gap-2">
             <img
-              src=''
+              src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTZ0FpBg5Myb9CQ-bQpFou9BY9JXoRG6208_Q&s'
+              alt="profile"
               className="w-12 h-12 rounded-full"
             />
             
@@ -108,7 +109,7 @@ const LinkedInPost = () => {
   return (
     <div className="max-w-screen mx-auto bg-gray-50 h-screen flex flex-col gap-2">
       {/* Header */}
-      <div className="p-3 border-b bg-white flex justify-between items-center">
+      <div className="p-4 border-b bg-white flex justify-between items-center">
       <h1 className="text-l font-semibold font-gray-50 ">Post Preview</h1>
         <div className="flex items-center gap-2">
           <span className="text-gray-500 text-sm">Devices:</span>
@@ -117,19 +118,19 @@ const LinkedInPost = () => {
               onClick={() => setActiveDevice('phone')}
               className={`p-1 rounded ${activeDevice === 'phone' ? 'text-blue-500' : 'text-gray-400'}`}
             >
-              <Smartphone size={20} />
+              <Smartphone size={25.4} />
             </button>
             <button
               onClick={() => setActiveDevice('tablet')}
               className={`p-1 rounded ${activeDevice === 'tablet' ? 'text-blue-500' : 'text-gray-400'}`}
             >
-              <Tablet size={20} />
+              <Tablet size={25.4} />
             </button>
             <button
               onClick={() => setActiveDevice('desktop')}
               className={`p-1 rounded ${activeDevice === 'desktop' ? 'text-blue-500' : 'text-gray-400'}`}
             >
-              <Monitor size={20} />
+              <Monitor size={25.4} />
             </button>
           </div>
         </div>

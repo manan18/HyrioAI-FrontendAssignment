@@ -1,11 +1,9 @@
 import React, { createContext, useState, useContext } from "react";
 
-// Create Context
 const ContentContext = createContext();
 
-// Provider Component
 export const ContentProvider = ({ children }) => {
-  const [globalContent, setGlobalContent] = useState(""); // Define the state and setter
+  const [globalContent, setGlobalContent] = useState("");
 
   return (
     <ContentContext.Provider value={{ globalContent, setGlobalContent }}>
@@ -14,5 +12,4 @@ export const ContentProvider = ({ children }) => {
   );
 };
 
-// Hook to use Context
 export const useContent = () => useContext(ContentContext);

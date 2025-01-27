@@ -13,6 +13,10 @@ import {
 } from 'lucide-react';
 
 const Sidebar = () => {
+
+  const wordsGenerated = 12500;
+  const totalWords = 50000;
+  
   return (
     <div className="w-64 bg-white min-h-screen mx-auto border-gray-100 py-4 px-3 flex flex-col">
       {/* Write Post Button */}
@@ -71,14 +75,14 @@ const Sidebar = () => {
               Words generated
               <Info size={14} />
             </div>
-            <span className="text-xs font-semibold text-gray-600">12.5k / 50k</span>
+            <span className="text-xs font-semibold text-gray-600">{wordsGenerated/1000}k / {totalWords/1000}k</span>
           </div>
           
           {/* Progress Bar */}
           <div className="w-full bg-gray-200 rounded-full h-1 mb-2">
             <div 
               className="bg-[#0ba5ed] h-1 rounded-full" 
-              style={{ width: '25%' }}
+              style={{ width: `${wordsGenerated/totalWords*100}%` }}
             ></div>
           </div>
           
