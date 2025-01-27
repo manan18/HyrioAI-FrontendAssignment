@@ -11,6 +11,7 @@ export default function PostEditor() {
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [lastSaved, setLastSaved] = useState("Jan 27, 2025, 02:05 PM");
   const [cursorPosition, setCursorPosition] = useState(null);
+  const [charCount, setCharCount] = useState(0); // New state for character count
 
   // Store the cursor range
   const savedRange = useRef(null);
@@ -43,6 +44,7 @@ export default function PostEditor() {
     if (editorRef.current) {
       const plainText = editorRef.current.textContent; // Extract plain text
       setGlobalContent(plainText); // Save plain text to global content
+      setCharCount(plainText.length); // Update character count
     }
     restoreCursorPosition(); // Restore cursor position after changes
   };
@@ -141,7 +143,6 @@ export default function PostEditor() {
               onClick={insertHeadline}
               className="absolute w-8 h-8 bg-white left-2 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors transform -translate-y-1/2"
               style={{
-        
                 top: `${cursorPosition.y}px`
               }}
             >
@@ -155,9 +156,12 @@ export default function PostEditor() {
             onFormat={handleFormat}
           />
 
-          <div>
+<div>
             <div className="absolute bottom-4 left-4 mt-2 text-sm text-gray-500">
               Last saved at {lastSaved}
+            </div>
+            <div className="absolute bottom-4 right-4 text-sm text-gray-500">
+              {charCount} characters
             </div>
           </div>
         </div>
@@ -185,6 +189,8 @@ export default function PostEditor() {
           </div>
         </div>
       </div>
+
+      
     </div>
   );
 }
