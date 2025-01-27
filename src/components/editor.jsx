@@ -2,15 +2,15 @@ import React, { useState, useRef } from "react";
 import { useContent } from "./contentContext";
 import { Button } from "./atoms/button";
 import Toolbar from "./atoms/toolbar";
-import { X } from "lucide-react";
+import { X, Plus } from "lucide-react";
 import FormattingTooltip from "./atoms/tooltip";
-
 
 export default function PostEditor() {
   const { setGlobalContent } = useContent();
   const editorRef = useRef(null);
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [lastSaved, setLastSaved] = useState("Jan 27, 2025, 02:05 PM");
+  const [cursorPosition, setCursorPosition] = useState(null);
 
   // Store the cursor range
   const savedRange = useRef(null);
@@ -19,6 +19,14 @@ export default function PostEditor() {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
       savedRange.current = selection.getRangeAt(0);
+      
+      // Calculate cursor position for plus button
+      const range = selection.getRangeAt(0);
+      const rect = range.getBoundingClientRect();
+      setCursorPosition({
+        x: rect.right,
+        y: rect.top + (rect.height / 2)-100
+      });
     }
   };
 
@@ -60,6 +68,32 @@ export default function PostEditor() {
     }
   };
 
+  const insertHeadline = () => {
+    if (savedRange.current) {
+      const selection = window.getSelection();
+      selection.removeAllRanges();
+      selection.addRange(savedRange.current);
+      
+      // Create and insert headline
+      const headlineElement = document.createElement('h4');
+      headlineElement.className = 'text-2xl font-bold my-4';
+      headlineElement.textContent = 'New Headline';
+      savedRange.current.insertNode(headlineElement);
+      
+      // Place cursor at end of new headline
+      const range = document.createRange();
+      range.setStartAfter(headlineElement);
+      range.collapse(true);
+      
+      selection.removeAllRanges();
+      selection.addRange(range);
+      
+      // Focus editor and update content
+      editorRef.current.focus();
+      handleInput();
+    }
+  };
+
   const changeLastSaved = () => {
     const now = new Date();
     const options = {
@@ -93,7 +127,7 @@ export default function PostEditor() {
       <div className="flex-1 flex flex-col p-4 overflow-hidden">
         <div className="flex-1 relative">
           <div
-            className="w-full h-full min-h-[400px] p-2 border rounded-md focus-within:ring-2 focus-within:ring-blue-500"
+            className="w-full h-full min-h-[400px] text-left p-2 border rounded-md focus-within:ring-2 focus-within:ring-blue-500"
             contentEditable
             ref={editorRef}
             onInput={handleInput}
@@ -101,6 +135,19 @@ export default function PostEditor() {
             onKeyUp={handleTextSelection}
             dangerouslySetInnerHTML={{ __html: "" }} // Start with empty content
           />
+
+          {cursorPosition && (
+            <button
+              onClick={insertHeadline}
+              className="absolute w-8 h-8 bg-white left-2 rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 transition-colors transform -translate-y-1/2"
+              style={{
+        
+                top: `${cursorPosition.y}px`
+              }}
+            >
+              <Plus className="w-5 h-5 text-blue-500" />
+            </button>
+          )}
 
           <FormattingTooltip
             position={tooltipPosition}
@@ -118,13 +165,13 @@ export default function PostEditor() {
 
       <div className="border-t p-4 bg-white">
         <div className="flex justify-between items-center max-w-full mx-auto">
-            <Button
-              onClick={changeLastSaved}
-              variant="outline"
-              className="text-gray-600 bg-white border border-gray-200 hover:bg-gray-50"
-            >
-              Save as Draft
-            </Button>
+          <Button
+            onClick={changeLastSaved}
+            variant="outline"
+            className="text-gray-600 bg-white border border-gray-200 hover:bg-gray-50"
+          >
+            Save as Draft
+          </Button>
           <div className="flex space-x-4">
             <Button
               variant="outline"
@@ -132,9 +179,9 @@ export default function PostEditor() {
             >
               Schedule
             </Button>
-          <Button className="bg-[#0ba5ed] text-white hover:bg-blue-600">
-            Publish
-          </Button>
+            <Button className="bg-[#0ba5ed] text-white hover:bg-blue-600">
+              Publish
+            </Button>
           </div>
         </div>
       </div>
