@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useRef, useEffect } from "react";
+import React from "react";
 import { X } from 'lucide-react';
 
 const FormattingTooltip = ({ position, onClose, onFormat }) => {

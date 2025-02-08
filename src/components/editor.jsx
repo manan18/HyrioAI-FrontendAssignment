@@ -13,7 +13,7 @@ export default function PostEditor() {
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [lastSaved, setLastSaved] = useState("Jan 27, 2025, 02:05 PM");
   const [cursorPosition, setCursorPosition] = useState(null);
-  const [charCount, setCharCount] = useState(0); // New state for character count
+  const [charCount, setCharCount] = useState(0);
 
   
   const savedRange = useRef(null);
@@ -21,8 +21,7 @@ export default function PostEditor() {
   const saveCursorPosition = () => {
     const selection = window.getSelection();
     if (selection && selection.rangeCount > 0) {
-      savedRange.current = selection.getRangeAt(0);
-      
+      savedRange.current = selection.getRangeAt(0);      
       
       const range = selection.getRangeAt(0);
       const rect = range.getBoundingClientRect();
@@ -75,15 +74,13 @@ export default function PostEditor() {
   const insertHeadline = () => {
     if (savedRange.current) {
       const selection = window.getSelection();
-      selection.removeAllRanges();
-      selection.addRange(savedRange.current);
-      
+      // selection.removeAllRanges();
+      // selection.addRange(savedRange.current);      
     
       const headlineElement = document.createElement('h4');
       headlineElement.className = 'text-2xl font-bold my-4';
       headlineElement.textContent = 'New Headline';
-      savedRange.current.insertNode(headlineElement);
-      
+      window.getSelection().getRangeAt(0).insertNode(headlineElement);
       
       const range = document.createRange();
       range.setStartAfter(headlineElement);
